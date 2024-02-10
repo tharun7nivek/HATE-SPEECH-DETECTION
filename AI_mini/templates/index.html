@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hate Speech Detection</title>
+    <!-- Styles remain the same -->
+    <style>
+        body {
+          width: 300px;
+          height: 400px;
+          margin: 0;
+          padding: 10px;
+          background-color: #f5f5f5;
+          font-family: Arial, sans-serif;
+        }
+        h1 {
+          text-align: center;
+          font-size: 20px;
+          margin-bottom: 20px;
+        }
+        img {
+          display: block;
+          margin: auto;
+          width: 100px;
+          height: 100px;
+        }
+        form {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          height: 200px;
+        }
+        label {
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+        textarea {
+          height: 100px;
+          resize: none;
+          font-size: 16px;
+          padding: 5px;
+          border: 1px solid #ccc;
+        }
+        button {
+          font-size: 16px;
+          padding: 10px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+        p {
+          text-align: center;
+          font-size: 16px;
+          margin-top: 20px;
+        }
+      </style>
+</head>
+<body>
+    <h1>Hate Speech Detection</h1>
+    <form method="POST" action="/predict">
+        <label for="text">Enter the text:</label><br>
+        <textarea name="text" id="text" cols="30" rows="10"></textarea> <br><br>
+        <button type="submit">Predict</button>
+    </form>
+    <br>
+    <p>Prediction: <span id="prediction"></span></p>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('form').on('submit', function(event) {
+            event.preventDefault();
+            var text = $('#text').val();
+            $.ajax({
+                type: 'POST',
+                url: '/predict',
+                data: {'text': text},
+                success: function(data) {
+                    var predictionIndex = data.prediction;
+                    if (predictionIndex === 0) {
+                        $('#prediction').text('The text contains Hate Speech').addClass('result-real').removeClass('result-fake');
+                    } else if (predictionIndex === 1) {
+                        $('#prediction').text('The text is Offensive Language').addClass('result-fake').removeClass('result-real');
+                    } else if (predictionIndex === 2) {
+                        $('#prediction').text('The text is Normal').removeClass('result-real result-fake');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
